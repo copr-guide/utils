@@ -1,4 +1,4 @@
-package utils
+package logger
 
 import (
 	"fmt"
@@ -6,6 +6,16 @@ import (
 	"os"
 	"time"
 )
+
+var _filePath string
+
+/*
+pass in the get working directory argument and it will find the logs folder from there.
+os.Getwd()
+*/
+func SetFilePath(dir string) {
+	_filePath = dir
+}
 
 /*
 creates log template for us.
@@ -22,12 +32,8 @@ Gets filepath that it is going to log to
 CANNOT USE built LOG functions as it will cause infinite recursion
 */
 func getFileLocation() (string, error) {
-	wd, err := os.Getwd()
-	if err != nil {
-		return "", err
-	}
 	year, month, day := time.Now().Date()
-	return fmt.Sprintf("%s/logs/%d-%02d-%02d.log", wd, year, int(month), day), nil
+	return fmt.Sprintf("%s/logs/%d-%02d-%02d.log", _filePath, year, int(month), day), nil
 }
 
 /*
