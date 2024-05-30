@@ -7,7 +7,69 @@ import (
 	"time"
 )
 
-var _filePath string
+type LogPath struct {
+	file     string
+	function string
+}
+
+var (
+	_filePath string
+	logPaths  []LogPath
+)
+
+/*
+Sets a new log with file and function.
+Returns the code which will be used to refernce the file and function name.
+*/
+func SetLog(file, function string) int {
+	code := len(logPaths)
+
+	logPaths = append(logPaths, LogPath{
+		file:     file,
+		function: function,
+	})
+
+	return code
+}
+
+/*
+Returns true if code should exist.
+Returns False if code should not exist.
+*/
+func validateCode(code int) bool {
+	// checks if its invalid and flips result
+	return !(code < 0 || code >= len(logPaths)) // if not invalid
+}
+
+/*
+Uses the code to print file and function.
+Can be sussy if not used properly and by passing in random codes.
+Only use when you have SetLog().
+*/
+func LogNonFatal_C(code int, msg string) {
+	if validateCode(code) {
+		LogNonFatal("log.go", "LogNonFatal_C()", "Entered Invalid Code. Returning False automacially")
+		return
+	}
+
+	logPath := logPaths[code]
+	LogNonFatal(logPath.file, logPath.function, msg)
+}
+
+/*
+Uses the code to print file and function.
+Can be sussy if not used properly and by passing in random codes.
+Only use when you have SetLog().
+*/
+func LogNonFatalError_C(code int, msg string, err error) bool {
+	if code < 0 || code >= len(logPaths) {
+		LogNonFatal("log.go", "LogNonFatalError_C()", "Entered Invalid Code. Returning False automacially")
+		return false
+	}
+
+	logPath := logPaths[code]
+	return LogNonFatalError(logPath.file, logPath.function, msg, err)
+}
 
 /*
 pass in the get working directory argument and it will find the logs folder from there.
