@@ -47,7 +47,7 @@ Can be sussy if not used properly and by passing in random codes.
 Only use when you have SetLog().
 */
 func LogNonFatal_C(code int, msg string) {
-	if validateCode(code) {
+	if !validateCode(code) {
 		LogNonFatal("log.go", "LogNonFatal_C()", "Entered Invalid Code. Returning False automacially")
 		return
 	}
@@ -62,7 +62,7 @@ Can be sussy if not used properly and by passing in random codes.
 Only use when you have SetLog().
 */
 func LogNonFatalError_C(code int, msg string, err error) bool {
-	if code < 0 || code >= len(logPaths) {
+	if !validateCode(code) {
 		LogNonFatal("log.go", "LogNonFatalError_C()", "Entered Invalid Code. Returning False automacially")
 		return false
 	}
